@@ -10,51 +10,8 @@ using UIKit;
 namespace AFNetworking
 {
     partial interface IAFURLRequestSerialization { }
-    partial interface IAFURLResponseSerialization { }
-    partial interface IAFImageCache { }
-    partial interface IAFImageRequestCache { }
-    partial interface IAFMultipartFormData { }
-
-    //(NSString * _Nonnull (^ _Nullable)(NSUrlRequest * _Nonnull, id _Nonnull, NSError * _Nullable * _Nullable))block;
-    delegate string SerializationWithBlock(NSUrlRequest request, NSObject obj, [NullAllowed] NSError error);
-
-    delegate NSUrlSessionAuthChallengeDisposition SessionDidReceiveAuthenticationChallengeBlock(NSUrlSession session, NSUrlAuthenticationChallenge challenge, [NullAllowed] out NSUrlCredential credential);
-    delegate NSUrlSessionAuthChallengeDisposition TaskDidReceiveAuthenticationChallengeBlock(NSUrlSession session, NSUrlSessionTask sessionTask, NSUrlAuthenticationChallenge challenge, [NullAllowed] out NSUrlCredential credential);
-    delegate NSInputStream TaskNeedNewBodyStreamBlock(NSUrlSession session, NSUrlSessionTask task);
-    delegate void TaskDidSendBodyDataBlock(NSUrlSession session, NSUrlSessionTask sessionTask, long l1, long l2, long l3);
-    delegate void TaskDidCompleteBlock(NSUrlSession session, NSUrlSessionTask sessionTask, [NullAllowed]NSError error);
-    delegate NSUrlSessionResponseDisposition DataTaskDidReceiveResponseBlock(NSUrlSession session, NSUrlSessionDataTask dataTask, NSUrlResponse response);
-    delegate void DataTaskDidBecomeDownloadTaskBlock(NSUrlSession session, NSUrlSessionDataTask dataTask, NSUrlSessionDownloadTask downloadTask);
-    delegate void DataTaskDidReceiveDataBlock(NSUrlSession session, NSUrlSessionDataTask dataTask, NSData data);
-    delegate NSCachedUrlResponse DataTaskWillCacheResponseBlock(NSUrlSession session, NSUrlSessionDataTask dateaTask, NSCachedUrlResponse response);
-    delegate void DidFinishEventsForBackgroundURLSessionBlock(NSUrlSession session);
-    delegate NSUrl DownloadTaskDidFinishDownloadingBlock(NSUrlSession session, NSUrlSessionDownloadTask downloadTask, NSUrl url);
-    delegate void DownloadTaskDidWriteDataBlock(NSUrlSession session, NSUrlSessionDownloadTask downloadTask, long l1, long l2, long l3);
-    delegate void DownloadTaskDidResumeBlock(NSUrlSession session, NSUrlSessionDownloadTask downloadTask, long l1, long l2);
-    delegate void DownloadImageForURLRequestSuccessBlock([NullAllowed]NSUrlRequest request, [NullAllowed]NSHttpUrlResponse response, UIImage image);
-    delegate void DownloadImageForURLRequestFailurBlock(NSUrlRequest request, [NullAllowed]NSHttpUrlResponse response, NSError image);
-    delegate void ReachabilityStatusChangeBlock(AFNetworkReachabilityStatus status);
-    delegate void DataTaskWithRequestCompletionBlock(NSUrlResponse response, [NullAllowed]NSObject data, [NullAllowed]NSError error);
-    delegate void ProgressBlock(NSProgress progress);
-    delegate void DataTaskCompletionBlock(NSUrlResponse response, [NullAllowed] NSObject data, [NullAllowed] NSError error);
-    delegate void DownloadTaskDestinationBlock(NSUrl url1, NSUrlResponse response, NSUrl url2);
-    delegate void ErrorBlock([NullAllowed]NSError error);
-    delegate void MultiPartBlock([NullAllowed]IAFMultipartFormData data);
-    delegate void SessionDidBecomeInvalidBlock(NSUrlSession session, NSError errer);
-    delegate NSUrlRequest TaskWillPerformHTTPRedirectionBlock(NSUrlSession session, NSUrlSessionTask sessionTask, NSUrlResponse response, NSUrlRequest request);
-    delegate void TaskWithoutDataSuccessBlock(NSUrlSessionTask sessionTask);
-    delegate void TaskWithDataSuccessBlock(NSUrlSessionDataTask sessionTask, NSObject data);
-    delegate void TaskFailureBlock(NSUrlSessionDataTask sessionTask, NSError data);
-    delegate void BoolBlock(bool b);
-    delegate void ImageForStateSuccessBlock(NSUrlRequest request, NSHttpUrlResponse response, UIImage image);
-    delegate void ImageForStateFailureBlock(NSUrlRequest request, [NullAllowed]NSHttpUrlResponse response, UIImage image);
-	delegate NSData DataRequestSuccessBlock(NSHttpUrlResponse response, NSData data);
-	delegate string StringRequestSuccessBlock(NSHttpUrlResponse response, string data);
-
-
-
-	// @protocol AFURLRequestSerialization <NSObject, NSSecureCoding, NSCopying>
-	[Protocol, Model]
+    // @protocol AFURLRequestSerialization <NSObject, NSSecureCoding, NSCopying>
+    [Protocol, Model]
     [BaseType(typeof(NSObject))]
     interface AFURLRequestSerialization : INSSecureCoding, INSCopying
     {
@@ -131,9 +88,10 @@ namespace AFNetworking
         [Export("setQueryStringSerializationWithStyle:")]
         void SetQueryStringSerializationWithStyle(AFHTTPRequestQueryStringSerializationStyle style);
 
+        //TODO out parameter in block
         // -(void)setQueryStringSerializationWithBlock:(NSString * _Nonnull (^ _Nullable)(NSUrlRequest * _Nonnull, id _Nonnull, NSError * _Nullable * _Nullable))block;
         [Export("setQueryStringSerializationWithBlock:")]
-        unsafe void SetQueryStringSerializationWithBlock([NullAllowed] SerializationWithBlock block);
+        unsafe void SetQueryStringSerializationWithBlock([NullAllowed] Func<NSUrlRequest, NSObject, NSError, NSString> block);
 
         // -(NSMutableURLRequest * _Nonnull)requestWithMethod:(NSString * _Nonnull)method URLString:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters error:(NSError * _Nullable * _Nullable)error;
         [Export("requestWithMethod:URLString:parameters:error:")]
@@ -141,13 +99,14 @@ namespace AFNetworking
 
         // -(NSMutableURLRequest * _Nonnull)multipartFormRequestWithMethod:(NSString * _Nonnull)method URLString:(NSString * _Nonnull)URLString parameters:(NSDictionary<NSString *,id> * _Nullable)parameters constructingBodyWithBlock:(void (^ _Nullable)(id<AFMultipartFormData> _Nonnull))block error:(NSError * _Nullable * _Nullable)error;
         [Export("multipartFormRequestWithMethod:URLString:parameters:constructingBodyWithBlock:error:")]
-        NSMutableUrlRequest MultipartFormRequestWithMethod(string method, string URLString, [NullAllowed] NSDictionary<NSString, NSObject> parameters, [NullAllowed] MultiPartBlock block, [NullAllowed] out NSError error);
+        NSMutableUrlRequest MultipartFormRequestWithMethod(string method, string URLString, [NullAllowed] NSDictionary<NSString, NSObject> parameters, [NullAllowed] Action<AFMultipartFormData> block, [NullAllowed] out NSError error);
 
         // -(NSMutableURLRequest * _Nonnull)requestWithMultipartFormRequest:(NSUrlRequest * _Nonnull)request writingStreamContentsToFile:(NSUrl * _Nonnull)fileURL completionHandler:(void (^ _Nullable)(NSError * _Nullable))handler;
         [Export("requestWithMultipartFormRequest:writingStreamContentsToFile:completionHandler:")]
-        NSMutableUrlRequest RequestWithMultipartFormRequest(NSUrlRequest request, NSUrl fileURL, [NullAllowed] ErrorBlock handler);
+        NSMutableUrlRequest RequestWithMultipartFormRequest(NSUrlRequest request, NSUrl fileURL, [NullAllowed] Action<NSError> handler);
     }
 
+    partial interface IAFMultipartFormData{}
     // @protocol AFMultipartFormData
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -241,6 +200,7 @@ namespace AFNetworking
         double kAFUploadStream3GSuggestedDelay { get; }
     }
 
+    partial interface IAFURLResponseSerialization { }
     // @protocol AFURLResponseSerialization <NSObject, NSSecureCoding, NSCopying>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -449,10 +409,11 @@ namespace AFNetworking
         [Export("managerForAddress:")]
         unsafe AFNetworkReachabilityManager ManagerForAddress(string address);
 
+        // TODO Ctor parameter has to change to NSObject
         // -(instancetype _Nonnull)initWithReachability:(SCNetworkReachabilityRef _Nonnull)reachability __attribute__((objc_designated_initializer));
-        [Export ("initWithReachability:")]
+        [Export("initWithReachability:")]
         [DesignatedInitializer]
-        IntPtr Constructor (NSObject networkReachability);
+        unsafe IntPtr Constructor(NSObject reachability);
 
         // -(void)startMonitoring;
         [Export("startMonitoring")]
@@ -468,7 +429,7 @@ namespace AFNetworking
 
         // -(void)setReachabilityStatusChangeBlock:(void (^ _Nullable)(AFNetworkReachabilityStatus))block;
         [Export("setReachabilityStatusChangeBlock:")]
-        void SetReachabilityStatusChangeBlock([NullAllowed] ReachabilityStatusChangeBlock block);
+        void SetReachabilityStatusChangeBlock([NullAllowed] Action<AFNetworkReachabilityStatus> block);
     }
 
     [Static]
@@ -527,6 +488,7 @@ namespace AFNetworking
         [NullAllowed, Export("completionQueue", ArgumentSemantic.Strong)]
         DispatchQueue CompletionQueue { get; set; }
 
+        //TODO DispatchGroup has to change to NSObject
         // @property (nonatomic, strong) dispatch_group_t _Nullable completionGroup;
         [NullAllowed, Export("completionGroup", ArgumentSemantic.Strong)]
         NSObject CompletionGroup { get; set; }
@@ -546,31 +508,31 @@ namespace AFNetworking
 
         // -(NSUrlSessionDataTask * _Nonnull)dataTaskWithRequest:(NSUrlRequest * _Nonnull)request completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler;
         [Export("dataTaskWithRequest:completionHandler:")]
-        NSUrlSessionDataTask DataTaskWithRequest(NSUrlRequest request, [NullAllowed] DataTaskWithRequestCompletionBlock completionHandler);
+        NSUrlSessionDataTask DataTaskWithRequest(NSUrlRequest request, [NullAllowed] Action<NSUrlResponse, NSObject, NSError> completionHandler);
 
         // -(NSUrlSessionDataTask * _Nonnull)dataTaskWithRequest:(NSUrlRequest * _Nonnull)request uploadProgress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgressBlock downloadProgress:(void (^ _Nullable)(NSProgress * _Nonnull))downloadProgressBlock completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler;
         [Export("dataTaskWithRequest:uploadProgress:downloadProgress:completionHandler:")]
-        NSUrlSessionDataTask DataTaskWithRequest(NSUrlRequest request, [NullAllowed] ProgressBlock uploadProgressBlock, [NullAllowed] ProgressBlock downloadProgressBlock, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionDataTask DataTaskWithRequest(NSUrlRequest request, [NullAllowed] Action<NSProgress> uploadProgressBlock, [NullAllowed] Action<NSProgress> downloadProgressBlock, [NullAllowed] Action<NSUrlResponse, NSObject, NSError> completionHandler);
 
         // -(NSUrlSessionUploadTask * _Nonnull)uploadTaskWithRequest:(NSUrlRequest * _Nonnull)request fromFile:(NSUrl * _Nonnull)fileURL progress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgressBlock completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler;
         [Export("uploadTaskWithRequest:fromFile:progress:completionHandler:")]
-        NSUrlSessionUploadTask UploadTaskWithRequest(NSUrlRequest request, NSUrl fileURL, [NullAllowed] ProgressBlock uploadProgressBlock, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionUploadTask UploadTaskWithRequest(NSUrlRequest request, NSUrl fileURL, [NullAllowed] Action<NSProgress> uploadProgressBlock, [NullAllowed] Action<NSUrlResponse, NSObject, NSError> completionHandler);
 
         // -(NSUrlSessionUploadTask * _Nonnull)uploadTaskWithRequest:(NSUrlRequest * _Nonnull)request fromData:(NSData * _Nullable)bodyData progress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgressBlock completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler;
         [Export("uploadTaskWithRequest:fromData:progress:completionHandler:")]
-        NSUrlSessionUploadTask UploadTaskWithRequest(NSUrlRequest request, [NullAllowed] NSData bodyData, [NullAllowed] ProgressBlock uploadProgressBlock, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionUploadTask UploadTaskWithRequest(NSUrlRequest request, [NullAllowed] NSData bodyData, [NullAllowed] Action<NSProgress> uploadProgressBlock, [NullAllowed] Action<NSUrlResponse, NSObject, NSError> completionHandler);
 
         // -(NSUrlSessionUploadTask * _Nonnull)uploadTaskWithStreamedRequest:(NSUrlRequest * _Nonnull)request progress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgressBlock completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, id _Nullable, NSError * _Nullable))completionHandler;
         [Export("uploadTaskWithStreamedRequest:progress:completionHandler:")]
-        NSUrlSessionUploadTask UploadTaskWithStreamedRequest(NSUrlRequest request, [NullAllowed] ProgressBlock uploadProgressBlock, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionUploadTask UploadTaskWithStreamedRequest(NSUrlRequest request, [NullAllowed] Action<NSProgress> uploadProgressBlock, [NullAllowed] Action<NSUrlResponse, NSObject, NSError> completionHandler);
 
         // -(NSUrlSessionDownloadTask * _Nonnull)downloadTaskWithRequest:(NSUrlRequest * _Nonnull)request progress:(void (^ _Nullable)(NSProgress * _Nonnull))downloadProgressBlock destination:(NSUrl * _Nonnull (^ _Nullable)(NSUrl * _Nonnull, NSUrlResponse * _Nonnull))destination completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, NSUrl * _Nullable, NSError * _Nullable))completionHandler;
         [Export("downloadTaskWithRequest:progress:destination:completionHandler:")]
-        NSUrlSessionDownloadTask DownloadTaskWithRequest(NSUrlRequest request, [NullAllowed] ProgressBlock downloadProgressBlock, [NullAllowed] DownloadTaskDestinationBlock destination, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionDownloadTask DownloadTaskWithRequest(NSUrlRequest request, [NullAllowed] Action<NSProgress> downloadProgressBlock, [NullAllowed] Func<NSUrl, NSUrlResponse, NSUrl> destination, [NullAllowed] Action<NSUrlResponse, NSUrl, NSError> completionHandler);
 
         // -(NSUrlSessionDownloadTask * _Nonnull)downloadTaskWithResumeData:(NSData * _Nonnull)resumeData progress:(void (^ _Nullable)(NSProgress * _Nonnull))downloadProgressBlock destination:(NSUrl * _Nonnull (^ _Nullable)(NSUrl * _Nonnull, NSUrlResponse * _Nonnull))destination completionHandler:(void (^ _Nullable)(NSUrlResponse * _Nonnull, NSUrl * _Nullable, NSError * _Nullable))completionHandler;
         [Export("downloadTaskWithResumeData:progress:destination:completionHandler:")]
-        NSUrlSessionDownloadTask DownloadTaskWithResumeData(NSData resumeData, [NullAllowed] ProgressBlock downloadProgressBlock, [NullAllowed] DownloadTaskDestinationBlock destination, [NullAllowed] DataTaskCompletionBlock completionHandler);
+        NSUrlSessionDownloadTask DownloadTaskWithResumeData(NSData resumeData, [NullAllowed] Action<NSProgress> downloadProgressBlock, [NullAllowed] Func<NSUrl, NSUrlResponse, NSUrl> destination, [NullAllowed] Action<NSUrlResponse, NSUrl, NSError> completionHandler);
 
         // -(NSProgress * _Nullable)uploadProgressForTask:(NSUrlSessionTask * _Nonnull)task;
         [Export("uploadProgressForTask:")]
@@ -584,63 +546,65 @@ namespace AFNetworking
 
         // -(void)setSessionDidBecomeInvalidBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSError * _Nonnull))block;
         [Export("setSessionDidBecomeInvalidBlock:")]
-        void SetSessionDidBecomeInvalidBlock([NullAllowed] SessionDidBecomeInvalidBlock block);
+        void SetSessionDidBecomeInvalidBlock([NullAllowed] Action<NSUrlSession, NSError> block);
 
+        //TODO out parameter in block
         // -(void)setSessionDidReceiveAuthenticationChallengeBlock:(NSUrlSessionAuthChallengeDisposition (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlAuthenticationChallenge * _Nonnull, NSUrlCredential * _Nullable * _Nullable))block;
         [Export("setSessionDidReceiveAuthenticationChallengeBlock:")]
-        unsafe void SetSessionDidReceiveAuthenticationChallengeBlock([NullAllowed] SessionDidReceiveAuthenticationChallengeBlock block);
+        unsafe void SetSessionDidReceiveAuthenticationChallengeBlock([NullAllowed] Func<NSUrlSession, NSUrlAuthenticationChallenge, NSUrlCredential, NSUrlSessionAuthChallengeDisposition> block);
 
         // -(void)setTaskNeedNewBodyStreamBlock:(NSInputStream * _Nonnull (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull))block;
         [Export("setTaskNeedNewBodyStreamBlock:")]
-        void SetTaskNeedNewBodyStreamBlock([NullAllowed] TaskNeedNewBodyStreamBlock block);
+        void SetTaskNeedNewBodyStreamBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionTask, NSInputStream> block);
 
         // -(void)setTaskWillPerformHTTPRedirectionBlock:(NSUrlRequest * _Nonnull (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull, NSUrlResponse * _Nonnull, NSUrlRequest * _Nonnull))block;
         [Export("setTaskWillPerformHTTPRedirectionBlock:")]
-        void SetTaskWillPerformHTTPRedirectionBlock([NullAllowed] TaskWillPerformHTTPRedirectionBlock block);
+        void SetTaskWillPerformHTTPRedirectionBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionTask, NSUrlResponse, NSUrlRequest, NSUrlRequest> block);
 
-        // -(void)setTaskDidReceiveAuthenticationChallengeBlock:(NSUrlSessionAuthChallengeDisposition (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull, NSUrlAuthenticationChallenge * _Nonnull, NSUrlCredential * _Nullable * _Nullable))block;
-        [Export("setTaskDidReceiveAuthenticationChallengeBlock:")]
-        unsafe void SetTaskDidReceiveAuthenticationChallengeBlock([NullAllowed] TaskDidReceiveAuthenticationChallengeBlock block);
+		//TODO out parameter in block
+		// -(void)setTaskDidReceiveAuthenticationChallengeBlock:(NSUrlSessionAuthChallengeDisposition (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull, NSUrlAuthenticationChallenge * _Nonnull, NSUrlCredential * _Nullable * _Nullable))block;
+		[Export("setTaskDidReceiveAuthenticationChallengeBlock:")]
+        unsafe void SetTaskDidReceiveAuthenticationChallengeBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionTask, NSUrlAuthenticationChallenge, NSUrlCredential, NSUrlSessionAuthChallengeDisposition> block);
 
         // -(void)setTaskDidSendBodyDataBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull, int64_t, int64_t, int64_t))block;
         [Export("setTaskDidSendBodyDataBlock:")]
-        void SetTaskDidSendBodyDataBlock([NullAllowed] TaskDidSendBodyDataBlock block);
+        void SetTaskDidSendBodyDataBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionTask, long, long, long> block);
 
         // -(void)setTaskDidCompleteBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionTask * _Nonnull, NSError * _Nullable))block;
         [Export("setTaskDidCompleteBlock:")]
-        void SetTaskDidCompleteBlock([NullAllowed] TaskDidCompleteBlock block);
+        void SetTaskDidCompleteBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionTask, NSError> block);
 
         // -(void)setDataTaskDidReceiveResponseBlock:(NSUrlSessionResponseDisposition (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDataTask * _Nonnull, NSUrlResponse * _Nonnull))block;
         [Export("setDataTaskDidReceiveResponseBlock:")]
-        void SetDataTaskDidReceiveResponseBlock([NullAllowed] DataTaskDidReceiveResponseBlock block);
+        void SetDataTaskDidReceiveResponseBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionDataTask, NSUrlResponse, NSUrlSessionResponseDisposition> block);
 
         // -(void)setDataTaskDidBecomeDownloadTaskBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDataTask * _Nonnull, NSUrlSessionDownloadTask * _Nonnull))block;
         [Export("setDataTaskDidBecomeDownloadTaskBlock:")]
-        void SetDataTaskDidBecomeDownloadTaskBlock([NullAllowed] DataTaskDidBecomeDownloadTaskBlock block);
+        void SetDataTaskDidBecomeDownloadTaskBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionDataTask, NSUrlSessionDownloadTask> block);
 
         // -(void)setDataTaskDidReceiveDataBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDataTask * _Nonnull, NSData * _Nonnull))block;
         [Export("setDataTaskDidReceiveDataBlock:")]
-        void SetDataTaskDidReceiveDataBlock([NullAllowed] DataTaskDidReceiveDataBlock block);
+        void SetDataTaskDidReceiveDataBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionDataTask, NSData> block);
 
-        // -(void)setDataTaskWillCacheResponseBlock:(NSCachedURLResponse * _Nonnull (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDataTask * _Nonnull, NSCachedURLResponse * _Nonnull))block;
+        // -(void)setDataTaskWillCacheResponseBlock:(NSCachedUrlResponse * _Nonnull (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDataTask * _Nonnull, NSCachedUrlResponse * _Nonnull))block;
         [Export("setDataTaskWillCacheResponseBlock:")]
-        void SetDataTaskWillCacheResponseBlock([NullAllowed] DataTaskWillCacheResponseBlock block);
+        void SetDataTaskWillCacheResponseBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionDataTask, NSCachedUrlResponse, NSCachedUrlResponse> block);
 
         // -(void)setDidFinishEventsForBackgroundURLSessionBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull))block;
         [Export("setDidFinishEventsForBackgroundURLSessionBlock:")]
-        void SetDidFinishEventsForBackgroundURLSessionBlock([NullAllowed] DidFinishEventsForBackgroundURLSessionBlock block);
+        void SetDidFinishEventsForBackgroundURLSessionBlock([NullAllowed] Action<NSUrlSession> block);
 
         // -(void)setDownloadTaskDidFinishDownloadingBlock:(NSUrl * _Nullable (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDownloadTask * _Nonnull, NSUrl * _Nonnull))block;
         [Export("setDownloadTaskDidFinishDownloadingBlock:")]
-        void SetDownloadTaskDidFinishDownloadingBlock([NullAllowed] DownloadTaskDidFinishDownloadingBlock block);
+        void SetDownloadTaskDidFinishDownloadingBlock([NullAllowed] Func<NSUrlSession, NSUrlSessionDownloadTask, NSUrl, NSUrl> block);
 
         // -(void)setDownloadTaskDidWriteDataBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDownloadTask * _Nonnull, int64_t, int64_t, int64_t))block;
         [Export("setDownloadTaskDidWriteDataBlock:")]
-        void SetDownloadTaskDidWriteDataBlock([NullAllowed] DownloadTaskDidWriteDataBlock block);
+        void SetDownloadTaskDidWriteDataBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionDownloadTask, long, long, long> block);
 
         // -(void)setDownloadTaskDidResumeBlock:(void (^ _Nullable)(NSUrlSession * _Nonnull, NSUrlSessionDownloadTask * _Nonnull, int64_t, int64_t))block;
         [Export("setDownloadTaskDidResumeBlock:")]
-        void SetDownloadTaskDidResumeBlock([NullAllowed] DownloadTaskDidResumeBlock block);
+        void SetDownloadTaskDidResumeBlock([NullAllowed] Action<NSUrlSession, NSUrlSessionDownloadTask, long, long> block);
     }
 
     [Static]
@@ -699,9 +663,10 @@ namespace AFNetworking
         [Export("requestSerializer", ArgumentSemantic.Strong)]
         AFURLRequestSerialization RequestSerializer { get; set; }
 
-        // @property (nonatomic, strong) AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull responseSerializer;
-        [Export("responseSerializer", ArgumentSemantic.Strong)]
-        AFURLResponseSerialization ResponseSerializer { get; set; }
+        // TODO Suppress warning on missing override
+        //// @property (nonatomic, strong) AFHTTPResponseSerializer<AFURLResponseSerialization> * _Nonnull responseSerializer;
+        //[Export("responseSerializer", ArgumentSemantic.Strong)]
+        //AFURLResponseSerialization ResponseSerializer { get; set; }
 
         // +(instancetype _Nonnull)manager;
         [Static]
@@ -720,54 +685,55 @@ namespace AFNetworking
         // -(NSUrlSessionDataTask * _Nullable)GET:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure __attribute__((deprecated("")));
         [Export("GET:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask GET(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask GET(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)GET:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters progress:(void (^ _Nullable)(NSProgress * _Nonnull))downloadProgress success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("GET:parameters:progress:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask GET(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] ProgressBlock downloadProgress, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask GET(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSProgress> downloadProgress, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)HEAD:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("HEAD:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask HEAD(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithoutDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask HEAD(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)POST:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure __attribute__((deprecated("")));
         [Export("POST:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)POST:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters progress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgress success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("POST:parameters:progress:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] ProgressBlock uploadProgress, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSProgress> uploadProgress, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)POST:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters constructingBodyWithBlock:(void (^ _Nullable)(id<AFMultipartFormData> _Nonnull))block success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure __attribute__((deprecated("")));
         [Export("POST:parameters:constructingBodyWithBlock:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] MultiPartBlock block, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<AFMultipartFormData> block, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)POST:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters constructingBodyWithBlock:(void (^ _Nullable)(id<AFMultipartFormData> _Nonnull))block progress:(void (^ _Nullable)(NSProgress * _Nonnull))uploadProgress success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("POST:parameters:constructingBodyWithBlock:progress:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] MultiPartBlock block, [NullAllowed] ProgressBlock uploadProgress, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask POST(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<AFMultipartFormData> block, [NullAllowed] Action<NSProgress> uploadProgress, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)PUT:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("PUT:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask PUT(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask PUT(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)PATCH:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("PATCH:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask PATCH(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask PATCH(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
 
         // -(NSUrlSessionDataTask * _Nullable)DELETE:(NSString * _Nonnull)URLString parameters:(id _Nullable)parameters success:(void (^ _Nullable)(NSUrlSessionDataTask * _Nonnull, id _Nullable))success failure:(void (^ _Nullable)(NSUrlSessionDataTask * _Nullable, NSError * _Nonnull))failure;
         [Export("DELETE:parameters:success:failure:")]
         [return: NullAllowed]
-        NSUrlSessionDataTask DELETE(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] TaskWithDataSuccessBlock success, [NullAllowed] TaskFailureBlock failure);
+        NSUrlSessionDataTask DELETE(string URLString, [NullAllowed] NSObject parameters, [NullAllowed] Action<NSUrlSessionDataTask, NSObject> success, [NullAllowed] Action<NSUrlSessionDataTask, NSError> failure);
     }
 
+    partial interface IAFImageCache { }
     // @protocol AFImageCache <NSObject>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
@@ -795,10 +761,11 @@ namespace AFNetworking
         UIImage ImageWithIdentifier(string identifier);
     }
 
+    partial interface IAFImageRequestCache { }
     // @protocol AFImageRequestCache <AFImageCache>
     [Protocol, Model]
     [BaseType(typeof(NSObject))]
-    interface AFImageRequestCache : IAFImageCache
+    interface AFImageRequestCache : AFImageCache
     {
         // @required -(void)addImage:(UIImage * _Nonnull)image forRequest:(NSUrlRequest * _Nonnull)request withAdditionalIdentifier:(NSString * _Nullable)identifier;
         [Abstract]
@@ -884,12 +851,12 @@ namespace AFNetworking
         // -(AFImageDownloadReceipt * _Nullable)downloadImageForURLRequest:(NSUrlRequest * _Nonnull)request success:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, NSError * _Nonnull))failure;
         [Export("downloadImageForURLRequest:success:failure:")]
         [return: NullAllowed]
-        AFImageDownloadReceipt DownloadImageForURLRequest(NSUrlRequest request, [NullAllowed] DownloadImageForURLRequestSuccessBlock success, [NullAllowed]DownloadImageForURLRequestFailurBlock failure);
+        AFImageDownloadReceipt DownloadImageForURLRequest(NSUrlRequest request, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, UIImage> success, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, NSError> failure);
 
         // -(AFImageDownloadReceipt * _Nullable)downloadImageForURLRequest:(NSUrlRequest * _Nonnull)request withReceiptID:(NSUUID * _Nonnull)receiptID success:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, NSError * _Nonnull))failure;
         [Export("downloadImageForURLRequest:withReceiptID:success:failure:")]
         [return: NullAllowed]
-        AFImageDownloadReceipt DownloadImageForURLRequest(NSUrlRequest request, NSUuid receiptID, [NullAllowed] DownloadImageForURLRequestSuccessBlock success, [NullAllowed] DownloadImageForURLRequestFailurBlock failure);
+        AFImageDownloadReceipt DownloadImageForURLRequest(NSUrlRequest request, NSUuid receiptID, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, UIImage> success, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, NSError> failure);
 
         // -(void)cancelTaskForImageDownloadReceipt:(AFImageDownloadReceipt * _Nonnull)imageDownloadReceipt;
         [Export("cancelTaskForImageDownloadReceipt:")]
@@ -897,7 +864,7 @@ namespace AFNetworking
     }
 
     // @interface AFNetworkActivityIndicatorManager : NSObject
-    //TODO [Unavailable (PlatformName.iOSAppExtension)]
+    //TODO [Unavailable(PlatformName.iOSAppExtension)]
     [BaseType(typeof(NSObject))]
     interface AFNetworkActivityIndicatorManager
     {
@@ -932,7 +899,7 @@ namespace AFNetworking
 
         // -(void)setNetworkingActivityActionWithBlock:(void (^ _Nullable)(BOOL))block;
         [Export("setNetworkingActivityActionWithBlock:")]
-        void SetNetworkingActivityActionWithBlock([NullAllowed] BoolBlock block);
+        void SetNetworkingActivityActionWithBlock([NullAllowed] Action<bool> block);
     }
 
     // @interface AFNetworking (UIActivityIndicatorView)
@@ -966,7 +933,7 @@ namespace AFNetworking
 
         // -(void)setImageForState:(UIControlState)state withURLRequest:(NSUrlRequest * _Nonnull)urlRequest placeholderImage:(UIImage * _Nullable)placeholderImage success:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, NSError * _Nonnull))failure;
         [Export("setImageForState:withURLRequest:placeholderImage:success:failure:")]
-        void SetImageForState(UIControlState state, NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] ImageForStateSuccessBlock success, [NullAllowed] ImageForStateFailureBlock failure);
+        void SetImageForState(UIControlState state, NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, UIImage> success, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, NSError> failure);
 
         // -(void)setBackgroundImageForState:(UIControlState)state withURL:(NSUrl * _Nonnull)url;
         [Export("setBackgroundImageForState:withURL:")]
@@ -978,7 +945,7 @@ namespace AFNetworking
 
         // -(void)setBackgroundImageForState:(UIControlState)state withURLRequest:(NSUrlRequest * _Nonnull)urlRequest placeholderImage:(UIImage * _Nullable)placeholderImage success:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, NSError * _Nonnull))failure;
         [Export("setBackgroundImageForState:withURLRequest:placeholderImage:success:failure:")]
-        void SetBackgroundImageForState(UIControlState state, NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] ImageForStateSuccessBlock success, [NullAllowed] ImageForStateFailureBlock failure);
+        void SetBackgroundImageForState(UIControlState state, NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, UIImage> success, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, NSError> failure);
 
         // -(void)cancelImageDownloadTaskForState:(UIControlState)state;
         [Export("cancelImageDownloadTaskForState:")]
@@ -995,7 +962,6 @@ namespace AFNetworking
     interface UIImage_AFNetworking
     {
         // +(UIImage *)safeImageWithData:(NSData *)data;
-        [Static]
         [Export("safeImageWithData:")]
         UIImage SafeImageWithData(NSData data);
     }
@@ -1021,7 +987,7 @@ namespace AFNetworking
 
         // -(void)setImageWithURLRequest:(NSUrlRequest * _Nonnull)urlRequest placeholderImage:(UIImage * _Nullable)placeholderImage success:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, UIImage * _Nonnull))success failure:(void (^ _Nullable)(NSUrlRequest * _Nonnull, NSHttpUrlResponse * _Nullable, NSError * _Nonnull))failure;
         [Export("setImageWithURLRequest:placeholderImage:success:failure:")]
-        void SetImageWithURLRequest(NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] ImageForStateSuccessBlock success, [NullAllowed] ImageForStateFailureBlock failure);
+        void SetImageWithURLRequest(NSUrlRequest urlRequest, [NullAllowed] UIImage placeholderImage, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, UIImage> success, [NullAllowed] Action<NSUrlRequest, NSHttpUrlResponse, NSError> failure);
 
         // -(void)cancelImageDownloadTask;
         [Export("cancelImageDownloadTask")]
@@ -1045,15 +1011,17 @@ namespace AFNetworking
     {
         // @property (nonatomic, strong) AFHTTPSessionManager * _Nonnull sessionManager;
         [Export("sessionManager", ArgumentSemantic.Strong)]
-        AFHTTPSessionManager SessionManager { get; set; }
+		AFHTTPSessionManager GetSessionManager();
+		[Export("setSessionManager:", ArgumentSemantic.Strong)]
+		void SetSessionManager(AFHTTPSessionManager sessionManager);
 
         // -(void)loadRequest:(NSUrlRequest * _Nonnull)request progress:(NSProgress * _Nullable * _Nullable)progress success:(NSString * _Nonnull (^ _Nullable)(NSHttpUrlResponse * _Nonnull, NSString * _Nonnull))success failure:(void (^ _Nullable)(NSError * _Nonnull))failure;
         [Export("loadRequest:progress:success:failure:")]
-        void LoadRequest(NSUrlRequest request, [NullAllowed] out NSProgress progress, [NullAllowed] StringRequestSuccessBlock success, [NullAllowed] ErrorBlock failure);
+        void LoadRequest(NSUrlRequest request, [NullAllowed] out NSProgress progress, [NullAllowed] Func<NSHttpUrlResponse, NSString, NSString> success, [NullAllowed] Action<NSError> failure);
 
         // -(void)loadRequest:(NSUrlRequest * _Nonnull)request MIMEType:(NSString * _Nullable)MIMEType textEncodingName:(NSString * _Nullable)textEncodingName progress:(NSProgress * _Nullable * _Nullable)progress success:(NSData * _Nonnull (^ _Nullable)(NSHttpUrlResponse * _Nonnull, NSData * _Nonnull))success failure:(void (^ _Nullable)(NSError * _Nonnull))failure;
         [Export("loadRequest:MIMEType:textEncodingName:progress:success:failure:")]
-        void LoadRequest(NSUrlRequest request, [NullAllowed] string MIMEType, [NullAllowed] string textEncodingName, [NullAllowed] out NSProgress progress, [NullAllowed] DataRequestSuccessBlock success, [NullAllowed] ErrorBlock failure);
+        void LoadRequest(NSUrlRequest request, [NullAllowed] string MIMEType, [NullAllowed] string textEncodingName, [NullAllowed] out NSProgress progress, [NullAllowed] Func<NSHttpUrlResponse, NSData, NSData> success, [NullAllowed] Action<NSError> failure);
     }
 
     // @interface AFNetworking (UIProgressView)
@@ -1069,4 +1037,16 @@ namespace AFNetworking
         [Export("setProgressWithDownloadProgressOfTask:animated:")]
         void SetProgressWithDownloadProgressOfTask(NSUrlSessionDownloadTask task, bool animated);
     }
+
+    //[Static]
+    //partial interface Constants
+    //{
+    //    // extern double AFNetworkingVersionNumber;
+    //    [Field("AFNetworkingVersionNumber", "__Internal")]
+    //    double AFNetworkingVersionNumber { get; }
+
+    //    // extern const unsigned char [] AFNetworkingVersionString;
+    //    [Field("AFNetworkingVersionString", "__Internal")]
+    //    byte[] AFNetworkingVersionString { get; }
+    //}
 }
