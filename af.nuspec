@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>Naxam.AFNetworking.iOS</id>
+        <version>3.1.0</version>
+        <description>Xamarin Binding Library - AFNetworking</description>
+        <authors>Vu Duc Tuyen</authors>
+        <owners>NAXAM CO.,LTD</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <title>Naxam - AFNetworking</title>
+        <releaseNotes>AFNetworking 3.1.0</releaseNotes>
+        <summary>Xamarin Binding Library - AFNetworking</summary>
+        <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+        <projectUrl>https://github.com/NAXAM/afnetworking-ios-binding</projectUrl>
+        <copyright>Copyright (c) 2017 NAXAM</copyright>
+        <tags>Xamarin.iOS, afnetworking</tags>
+    </metadata>
+    <!-- Optional 'files' node -->
+    <files>
+        <file src="Naxam.AFNetworking.iOS/bin/Release/Naxam.AFNetworking.iOS.dll" target="lib/Xamarin.iOS10/Naxam.AFNetworking.iOS.dll" />
+    </files>
+</package>

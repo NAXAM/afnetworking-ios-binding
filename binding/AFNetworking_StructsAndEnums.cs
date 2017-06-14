@@ -4,7 +4,7 @@ using AFNetworking;
 using Foundation;
 using ObjCRuntime;
 
-namespace AFNetworkingLib
+namespace AFNetworking
 {
 	static class CFunctions
 	{

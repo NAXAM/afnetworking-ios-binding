@@ -7,7 +7,7 @@ using Security;
 using SystemConfiguration;
 using UIKit;
 
-namespace AFNetworkingLib
+namespace AFNetworking
 {
 	// @protocol AFURLRequestSerialization <NSObject, NSSecureCoding, NSCopying>
 	[Protocol, Model]
