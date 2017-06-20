@@ -44,6 +44,8 @@
     <NativeReference Include="..\binding\AFNetworking.framework">
       <Kind>Framework</Kind>
       <SmartLink>False</SmartLink>
+      <ForceLoad>True</ForceLoad>
+      <Frameworks></Frameworks>
     </NativeReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.ObjCBinding.CSharp.targets" />

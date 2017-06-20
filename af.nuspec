@@ -3,13 +3,13 @@
     <metadata>
         <!-- Required elements-->
         <id>Naxam.AFNetworking.iOS</id>
-        <version>3.1.0</version>
+        <version>3.1.0.2</version>
         <description>Xamarin Binding Library - AFNetworking</description>
         <authors>Vu Duc Tuyen</authors>
         <owners>NAXAM CO.,LTD</owners>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <title>Naxam - AFNetworking</title>
-        <releaseNotes>AFNetworking 3.1.0</releaseNotes>
+        <releaseNotes>AFNetworking 3.1.0/Link frameworks</releaseNotes>
         <summary>Xamarin Binding Library - AFNetworking</summary>
         <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
         <projectUrl>https://github.com/NAXAM/afnetworking-ios-binding</projectUrl>

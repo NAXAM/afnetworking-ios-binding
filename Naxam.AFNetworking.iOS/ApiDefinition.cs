@@ -183,21 +183,21 @@ namespace AFNetworking
     [Static]
     partial interface AFConstants
     {
-        // extern NSString *const _Nonnull AFURLRequestSerializationErrorDomain;
-        [Field("AFURLRequestSerializationErrorDomain", "__Internal")]
-        NSString AFURLRequestSerializationErrorDomain { get; }
+        //// extern NSString *const _Nonnull AFURLRequestSerializationErrorDomain;
+        //[Field("AFURLRequestSerializationErrorDomain", "__Internal")]
+        //NSString AFURLRequestSerializationErrorDomain { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingOperationFailingURLRequestErrorKey;
-        [Field("AFNetworkingOperationFailingURLRequestErrorKey", "__Internal")]
-        NSString AFNetworkingOperationFailingURLRequestErrorKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingOperationFailingURLRequestErrorKey;
+        //[Field("AFNetworkingOperationFailingURLRequestErrorKey", "__Internal")]
+        //NSString AFNetworkingOperationFailingURLRequestErrorKey { get; }
 
-        // extern const NSUInteger kAFUploadStream3GSuggestedPacketSize;
-        [Field("kAFUploadStream3GSuggestedPacketSize", "__Internal")]
-        nuint kAFUploadStream3GSuggestedPacketSize { get; }
+        //// extern const NSUInteger kAFUploadStream3GSuggestedPacketSize;
+        //[Field("kAFUploadStream3GSuggestedPacketSize", "__Internal")]
+        //nuint kAFUploadStream3GSuggestedPacketSize { get; }
 
-        // extern const NSTimeInterval kAFUploadStream3GSuggestedDelay;
-        [Field("kAFUploadStream3GSuggestedDelay", "__Internal")]
-        double kAFUploadStream3GSuggestedDelay { get; }
+        //// extern const NSTimeInterval kAFUploadStream3GSuggestedDelay;
+        //[Field("kAFUploadStream3GSuggestedDelay", "__Internal")]
+        //double kAFUploadStream3GSuggestedDelay { get; }
     }
 
     partial interface IAFURLResponseSerialization { }
@@ -311,17 +311,17 @@ namespace AFNetworking
     [Static]
     partial interface AFNetworkingOperationConstants
     {
-        // extern NSString *const _Nonnull AFURLResponseSerializationErrorDomain;
-        [Field("AFURLResponseSerializationErrorDomain", "__Internal")]
-        NSString AFURLResponseSerializationErrorDomain { get; }
+        //// extern NSString *const _Nonnull AFURLResponseSerializationErrorDomain;
+        //[Field("AFURLResponseSerializationErrorDomain", "__Internal")]
+        //NSString AFURLResponseSerializationErrorDomain { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingOperationFailingURLResponseErrorKey;
-        [Field("AFNetworkingOperationFailingURLResponseErrorKey", "__Internal")]
-        NSString AFNetworkingOperationFailingURLResponseErrorKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingOperationFailingURLResponseErrorKey;
+        //[Field("AFNetworkingOperationFailingURLResponseErrorKey", "__Internal")]
+        //NSString AFNetworkingOperationFailingURLResponseErrorKey { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingOperationFailingURLResponseDataErrorKey;
-        [Field("AFNetworkingOperationFailingURLResponseDataErrorKey", "__Internal")]
-        NSString AFNetworkingOperationFailingURLResponseDataErrorKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingOperationFailingURLResponseDataErrorKey;
+        //[Field("AFNetworkingOperationFailingURLResponseDataErrorKey", "__Internal")]
+        //NSString AFNetworkingOperationFailingURLResponseDataErrorKey { get; }
     }
 
     // @interface AFSecurityPolicy : NSObject <NSSecureCoding, NSCopying>
@@ -435,13 +435,13 @@ namespace AFNetworking
     [Static]
     partial interface AFNetworkingReachabilityConstants
     {
-        // extern NSString *const _Nonnull AFNetworkingReachabilityDidChangeNotification;
-        [Field("AFNetworkingReachabilityDidChangeNotification", "__Internal")]
-        NSString DidChangeNotification { get; }
+        //// extern NSString *const _Nonnull AFNetworkingReachabilityDidChangeNotification;
+        //[Field("AFNetworkingReachabilityDidChangeNotification", "__Internal")]
+        //NSString DidChangeNotification { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingReachabilityNotificationStatusItem;
-        [Field("AFNetworkingReachabilityNotificationStatusItem", "__Internal")]
-        NSString NotificationStatusItem { get; }
+        //// extern NSString *const _Nonnull AFNetworkingReachabilityNotificationStatusItem;
+        //[Field("AFNetworkingReachabilityNotificationStatusItem", "__Internal")]
+        //NSString NotificationStatusItem { get; }
     }
 
     // @interface AFURLSessionManager : NSObject <NSUrlSessionDelegate, NSUrlSessionTaskDelegate, NSUrlSessionDataDelegate, NSUrlSessionDownloadDelegate, NSSecureCoding, NSCopying>
@@ -610,45 +610,45 @@ namespace AFNetworking
     [Static]
     partial interface AFNetworkingTaskConstants
     {
-        // extern NSString *const _Nonnull AFNetworkingTaskDidResumeNotification;
-        [Field("AFNetworkingTaskDidResumeNotification", "__Internal")]
-        NSString AFNetworkingTaskDidResumeNotification { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidResumeNotification;
+        //[Field("AFNetworkingTaskDidResumeNotification", "__Internal")]
+        //NSString AFNetworkingTaskDidResumeNotification { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteNotification;
-        [Field("AFNetworkingTaskDidCompleteNotification", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteNotification { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteNotification;
+        //[Field("AFNetworkingTaskDidCompleteNotification", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteNotification { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidSuspendNotification;
-        [Field("AFNetworkingTaskDidSuspendNotification", "__Internal")]
-        NSString AFNetworkingTaskDidSuspendNotification { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidSuspendNotification;
+        //[Field("AFNetworkingTaskDidSuspendNotification", "__Internal")]
+        //NSString AFNetworkingTaskDidSuspendNotification { get; }
 
-        // extern NSString *const _Nonnull AFURLSessionDidInvalidateNotification;
-        [Field("AFURLSessionDidInvalidateNotification", "__Internal")]
-        NSString AFURLSessionDidInvalidateNotification { get; }
+        //// extern NSString *const _Nonnull AFURLSessionDidInvalidateNotification;
+        //[Field("AFURLSessionDidInvalidateNotification", "__Internal")]
+        //NSString AFURLSessionDidInvalidateNotification { get; }
 
-        // extern NSString *const _Nonnull AFURLSessionDownloadTaskDidFailToMoveFileNotification;
-        [Field("AFURLSessionDownloadTaskDidFailToMoveFileNotification", "__Internal")]
-        NSString AFURLSessionDownloadTaskDidFailToMoveFileNotification { get; }
+        //// extern NSString *const _Nonnull AFURLSessionDownloadTaskDidFailToMoveFileNotification;
+        //[Field("AFURLSessionDownloadTaskDidFailToMoveFileNotification", "__Internal")]
+        //NSString AFURLSessionDownloadTaskDidFailToMoveFileNotification { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteResponseDataKey;
-        [Field("AFNetworkingTaskDidCompleteResponseDataKey", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteResponseDataKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteResponseDataKey;
+        //[Field("AFNetworkingTaskDidCompleteResponseDataKey", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteResponseDataKey { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteSerializedResponseKey;
-        [Field("AFNetworkingTaskDidCompleteSerializedResponseKey", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteSerializedResponseKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteSerializedResponseKey;
+        //[Field("AFNetworkingTaskDidCompleteSerializedResponseKey", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteSerializedResponseKey { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteResponseSerializerKey;
-        [Field("AFNetworkingTaskDidCompleteResponseSerializerKey", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteResponseSerializerKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteResponseSerializerKey;
+        //[Field("AFNetworkingTaskDidCompleteResponseSerializerKey", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteResponseSerializerKey { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteAssetPathKey;
-        [Field("AFNetworkingTaskDidCompleteAssetPathKey", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteAssetPathKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteAssetPathKey;
+        //[Field("AFNetworkingTaskDidCompleteAssetPathKey", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteAssetPathKey { get; }
 
-        // extern NSString *const _Nonnull AFNetworkingTaskDidCompleteErrorKey;
-        [Field("AFNetworkingTaskDidCompleteErrorKey", "__Internal")]
-        NSString AFNetworkingTaskDidCompleteErrorKey { get; }
+        //// extern NSString *const _Nonnull AFNetworkingTaskDidCompleteErrorKey;
+        //[Field("AFNetworkingTaskDidCompleteErrorKey", "__Internal")]
+        //NSString AFNetworkingTaskDidCompleteErrorKey { get; }
     }
 
     // @interface AFHTTPSessionManager : AFURLSessionManager <NSSecureCoding, NSCopying>
